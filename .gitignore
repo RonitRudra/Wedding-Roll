@@ -1,0 +1,11 @@
+# Local Files
+*.pyc
+__pycache__/
+[eE]nv/
+*.env
+*.ini
+*.conf
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
+*.sqlite3
