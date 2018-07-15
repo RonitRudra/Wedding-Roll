@@ -1,9 +1,11 @@
-from django.test import TestCase, Client
+import os
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.hashers import make_password
+from django.test import TestCase, Client
 from users.models import UserAuth
-
 # Create your tests here.
 
 class HomePageAndSignup(TestCase):
@@ -90,3 +92,28 @@ class UserLogin(TestCase):
                                      'password':'password123'}, follow=True)
         self.assertTrue(response.context['user'].is_active)
         
+
+class PhotoUpload(TestCase):
+    def setUp(self):
+        self.image_path = os.path.join(os.getcwd(),'image.jpeg')
+        self.not_image_path = os.path.join(os.getcwd(),'manage.py')
+        # Since UploadForm accepts an image, a test image needs to be loaded
+        self.image = SimpleUploadedFile(name='image.jpeg',
+                                            content=open(self.image_path,
+                                                         'rb').read(),
+                                           content_type='image/jpeg')
+        self.not_image = SimpleUploadedFile(name='readme.txt',
+                                            content=open(self.not_image_path,
+                                                         'rb').read(),
+                                           content_type='text/plain')
+
+        
+    def test_view_function_accepts_image_on_upload(self):
+        response = self.client.post('/roll/',{'photo_url':self.image},follow=True)
+        self.assertRedirects(response,'/roll/',status_code=302,target_status_code=200)
+        self.assertTemplateUsed(response,'rolls/home.html')
+
+    def test_view_function_rejects_non_image_file_on_upload(self):
+        response = self.client.post('/roll/',{'photo_url':self.not_image},follow=True)
+        # If it is a redirect, response does not contain a template
+        self.assertTemplateUsed(response,'home/index.html')

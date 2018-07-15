@@ -100,8 +100,8 @@ class LiveTest(LiveServerTestCase):
 		self.assertIn('Oops! No Photos Have Been Uploaded Yet!!',tag.text)
 
 
-		upload_photo_button = self.browser.find_element_by_id('id_upload_photo')
-		upload_photo_button.send_keys(os.getcwd()+"/image.jpeg")
+		upload_photo_button = self.browser.find_element_by_id('id_photo_url')
+		upload_photo_button.send_keys(os.path.join(os.getcwd(),"image.jpeg"))
 		submit_button = self.browser.find_element_by_id('id_submit')
 		submit_button.click()
 		#self.fail(msg='Test Not Complete')

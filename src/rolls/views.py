@@ -1,9 +1,20 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
+from .forms import UploadForm
 # Create your views here.
 
 class Home(TemplateView):
-	template_name='rolls/home.html'
+    template_name='rolls/home.html'
 
-	def post(self,request):
-		return redirect('rolls:home')
+    def get(self,request, *args, **kwargs):
+        form = UploadForm()
+        return render(request,self.template_name,{'form':form})
+
+    def post(self,request, *args, **kwargs):
+        form=UploadForm(request.POST,request.FILES)
+        if form.is_valid():
+            return redirect('rolls:home')
+        else:
+            return redirect('home:home')
+        
