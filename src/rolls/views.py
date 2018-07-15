@@ -6,8 +6,13 @@ from .models import Uploads
 from users.models import UserAuth
 # Create your views here.
 
-class Home(TemplateView):
+class Home(ListView):
     template_name='rolls/home.html'
+    model = Uploads
+
+    def get_queryset(self):
+        return Uploads.objects.filter(is_approved=True).order_by('-date_posted')
+
 
 
 class Upload(TemplateView):
@@ -23,10 +28,17 @@ class Upload(TemplateView):
             # Poster ID is required, hence assign through request
             obj = form.save(commit=False)
             obj.uploader = request.user
-            obj.save()
-            messages.add_message(request,
+            if request.user.is_owner:
+                obj.is_approved=True
+                messages.add_message(request,
+                                 messages.SUCCESS,
+                                 'Your Photo Has Been Uploaded!!')
+            else:
+                messages.add_message(request,
                                  messages.SUCCESS,
                                  'Your Photo Has Been Uploaded But Will NOT Be Visible Untill Jane Or Joe Approve It.')
+            obj.save()
+
             return redirect('rolls:home')
         else:
             messages.add_message(request,messages.ERROR,'File is NOT an Image')

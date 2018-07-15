@@ -4,7 +4,10 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-class LiveTest(LiveServerTestCase):
+from django.contrib.auth.hashers import make_password
+from users.models import UserAuth
+
+class NewUser(LiveServerTestCase):
     # LiveServerTestCase creates it's own development server
     def setUp(self):
         self.BASE_URL = self.live_server_url
@@ -131,3 +134,52 @@ class LiveTest(LiveServerTestCase):
 
         logout_button = self.browser.find_element_by_id('id_logout')
         logout_button.click()
+
+class JoeAndJane(LiveServerTestCase):
+
+    def setUp(self):
+        self.BASE_URL = self.live_server_url
+        self.browser = webdriver.Chrome()
+
+        # Jane and Joe are the owners of the website with extra previlidges
+        # The site admin has created their accounts for them
+        user_joe = UserAuth.objects.create_user(email='joe123@email.com')
+        user_joe.set_password('password123')
+        user_joe.is_owner = True
+        user_joe.save()
+
+        user_jane = UserAuth.objects.create_user(email='jane456@email.com')
+        user_jane.set_password('password123')
+        user_jane.is_owner = True
+        user_jane.save()
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_admin(self):
+
+        # Joe visits his site and logs in with the credentials the admin gave him
+        self.browser.get(self.BASE_URL)
+        login_email_field = self.browser.find_element_by_id('id_email')
+        login_password_field = self.browser.find_element_by_id('id_password')
+        login_submit_button = self.browser.find_element_by_id('id_submit_button')
+
+        login_email_field.send_keys('joe123@email.com')
+        login_password_field.send_keys('password123')
+        login_submit_button.click()
+
+        # He is directed to the rolls page, but it's empty as nobody has uploaded anything yet
+        # He proceeds to the Upload page to upload a photo.
+        self.browser.find_element_by_id('id_upload').click()
+
+        upload_photo_button = self.browser.find_element_by_id('id_photo_url')
+        upload_photo_button.send_keys(os.path.join(os.getcwd(),"image.jpeg"))
+
+        # He then fills out the description
+        description_field = self.browser.find_element_by_id('id_description')
+        description_field.send_keys("Joe's First Photo Upload")
+        submit_button = self.browser.find_element_by_id('id_submit')
+        submit_button.click()
+
+        # He is, as expected redirected to the rolls page
+        # Since, he is the owner, the photo is auto-approved and appears in the page

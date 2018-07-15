@@ -1,6 +1,16 @@
 {% extends 'master_template.html' %}
-    {% block content %}
+{% block content %}
+    {% if uploads_list|length > 0 %}
+        {% for upload in uploads_list %}
+            <div>
+                <li>{{upload.date_posted}}<a href="/media/{{upload.photo_url}}">{{upload.description}}</a></li>
+                <img src="/media/{{upload.photo_url}}" width="480" height="240" />
+            </div> 
+        {% endfor %}
+    {% else %}
         <h1>Oops! No Photos Have Been Uploaded Yet!!</h1>
-        <a href="{% url 'rolls:upload' %}" id="id_upload">Upload A Photo</a>
-        <a href="{% url 'home:logout' %}" id="id_logout">Upload A Photo</a>
-    {% endblock %}
+    {% endif %}
+
+    <a href="{% url 'rolls:upload' %}" id="id_upload">Upload A Photo</a>
+    <a href="{% url 'home:logout' %}" id="id_logout">Logout</a>
+{% endblock %}
