@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.contrib.auth.hashers import make_password
 
 from .forms import UserLoginForm
 from users.models import UserAuth
@@ -43,7 +44,8 @@ class SignUp(TemplateView):
 			return redirect('home:signup')
 		else:
 			try:
-				user = UserAuth.objects.create(email=email,password=pw1)
+				pw = make_password(pw1)
+				user = UserAuth.objects.create(email=email,password=pw)
 			except:
 				return redirect('home:signup')
 		messages.add_message(request,messages.SUCCESS,
