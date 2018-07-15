@@ -55,3 +55,8 @@ class HomeTest(TestCase):
 		except ObjectDoesNotExist:
 			flag=True
 		self.assertTrue(flag,'Object was created')
+
+	def test_login_page_logs_in_registered_user_with_valid_fields(self):
+		response = self.client.post('/',{'email':'adam2000gmail.com',
+			'password':'password123'})
+		self.assertRedirects(response,'/roll/',status_code=302,target_status_code=200)

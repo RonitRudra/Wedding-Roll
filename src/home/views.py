@@ -6,7 +6,13 @@ from users.models import UserAuth
 # Create your views here.
 
 class Home(TemplateView):
+	'''
+	Contains a login form
+	'''
 	template_name = 'home/index.html'
+
+	def post(self,request):
+		return redirect('rolls:home')
 
 class SignUp(TemplateView):
 	template_name = 'home/signup.html'
