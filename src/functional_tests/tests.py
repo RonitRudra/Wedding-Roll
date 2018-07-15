@@ -1,5 +1,5 @@
 # FUNCTIONAL TESTS INVOLVING USER STORIES
-
+import os
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -81,6 +81,27 @@ class LiveTest(LiveServerTestCase):
 		tag = self.browser.find_element_by_tag_name('body')
 		self.assertIn('Your Account Has Been Created! Go Ahead and Log in!!',tag.text)
 
+		# Happy that his account was created he proceeds to log in
+		login_email_field = self.browser.find_element_by_id('id_email')
+		login_password_field = self.browser.find_element_by_id('id_password')
+		login_submit_button = self.browser.find_element_by_id('id_submit_button')
+
+		login_email_field.send_keys('adam2000@gmail.com')
+		login_password_field.send_keys('password123')
+		login_submit_button.click()
+
+		# Voila! he is logged in and is presented with a page.
+		curr_url = self.browser.current_url
+		self.assertEqual(curr_url,self.BASE_URL+'/roll/')
+		
+		# He Sees "Oops! No Photos Have Been Uploaded Yet!!".
+		# Below, He finds a field with a button which says "Upload Files"
+		tag = self.browser.find_element_by_tag_name('body')
+		self.assertIn('Oops! No Photos Have Been Uploaded Yet!!',tag.text)
 
 
+		upload_photo_button = self.browser.find_element_by_id('id_photo_url')
+		upload_photo_button.send_keys(os.path.join(os.getcwd(),"image.jpeg"))
+		submit_button = self.browser.find_element_by_id('id_submit')
+		submit_button.click()
 		#self.fail(msg='Test Not Complete')

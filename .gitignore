@@ -9,3 +9,9 @@ __pycache__/
 !**/migrations
 !**/migrations/__init__.py
 *.sqlite3
+*.jpeg
+*.png
+*.coverage
+.vs/
+[mM]edia/
+[sS]tatic/
