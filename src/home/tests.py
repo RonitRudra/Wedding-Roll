@@ -95,6 +95,7 @@ class UserLogin(TestCase):
 
 class PhotoUpload(TestCase):
     def setUp(self):
+        self.Client = Client()
         self.image_path = os.path.join(os.getcwd(),'image.jpeg')
         self.not_image_path = os.path.join(os.getcwd(),'manage.py')
         # Since UploadForm accepts an image, a test image needs to be loaded
@@ -106,7 +107,11 @@ class PhotoUpload(TestCase):
                                             content=open(self.not_image_path,
                                                          'rb').read(),
                                            content_type='text/plain')
-
+        # The upload form's view requires a user, hence logging one in
+        user = UserAuth.objects.create(email='testuser@email.com',
+                                       password=make_password('password123'))
+        user.save()
+        self.client.login(username='testuser@email.com', password='password123')
         
     def test_view_function_accepts_image_on_upload(self):
         response = self.client.post('/roll/',{'photo_url':self.image},follow=True)

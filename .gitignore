@@ -13,3 +13,5 @@ __pycache__/
 *.png
 *.coverage
 .vs/
+[mM]edia/
+[sS]tatic/

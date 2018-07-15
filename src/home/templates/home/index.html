@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>J&J's Wedding Roll</title>
-	</head>
-	<body>
+{% extends 'master_template.html' %}
+	{% block content %}
 		<h1>Welcome to Jane and Joe's Wedding Album</h1>
-		{% if messages %}
-		<ul class="messages">
-    		{% for message in messages %}
-    		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    		{% endfor %}
-		</ul>
-		{% endif %}
-
 		<form method="post">
 			{% csrf_token %}
 			<p><label for="id_email">Email:</label><input type="text" name="email" id="id_email" placeholder="Enter your email..."></p>
@@ -20,5 +8,4 @@
 			<button id="id_submit_button" type="submit">Login</button>
 		</form>
 		<p>New User? <a href="/signup/">Signup</a></p>
-	</body>
-</html>
+	{% endblock %}
