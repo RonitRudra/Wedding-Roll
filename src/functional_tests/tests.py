@@ -39,13 +39,30 @@ class LiveTest(LiveServerTestCase):
 		
 		# Below, there is a login form which asks for an email
 		# address and password and a submit button below it.
-		email_field = self.browser.find_element_by_id('id_email')
-		password_field = self.browser.find_element_by_id('id_password')
-		submit_button = self.browser.find_element_by_id('id_submit_button')
-		self.assertEqual('Login',submit_button.get_attribute("innerHTML"))
+		login_email_field = self.browser.find_element_by_id('id_email')
+		login_password_field = self.browser.find_element_by_id('id_password')
+		login_submit_button = self.browser.find_element_by_id('id_submit_button')
+		self.assertEqual('Login',login_submit_button.get_attribute("innerHTML"))
 
+		# He also sees a link for new user signup
+		signup_link = self.browser.find_element_by_link_text('Signup')
 
+		# Since, he has never used it before, he clicks on Signup
+		signup_link.click()
 
+		# He is redirected to a registration page
+		curr_url = self.browser.current_url
+		self.assertEqual(curr_url,self.BASE_URL+'/signup/')
 		
+		# He sees three form fields this time:
+		# One asks for his email, while the other two are
+		# password and password confirmation fields along with a 
+		# Signup Button
+
+		signup_email_field = self.browser.find_element_by_id('id_email')
+		signup_password1_field = self.browser.find_element_by_id('id_password1')
+		signup_password2_field = self.browser.find_element_by_id('id_password2')
+		signup_submit_button = self.browser.find_element_by_id('id_submit_button')
+		self.assertEqual('SignUp',signup_submit_button.get_attribute("innerHTML"))
 
 		#self.fail(msg='Test Not Complete')

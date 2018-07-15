@@ -14,3 +14,8 @@ class HomeTest(TestCase):
 		# ask for home page
 		response = self.client.get('/')
 		self.assertTemplateUsed(response,'home/index.html')
+
+
+	def test_signup_page_is_served(self):
+		response = self.client.get('/signup/')
+		self.assertTemplateUsed(response,'home/signup.html')
