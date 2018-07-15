@@ -114,11 +114,11 @@ class PhotoUpload(TestCase):
         self.client.login(username='testuser@email.com', password='password123')
         
     def test_view_function_accepts_image_on_upload(self):
-        response = self.client.post('/roll/',{'photo_url':self.image},follow=True)
+        response = self.client.post('/roll/upload/',{'photo_url':self.image},follow=True)
         self.assertRedirects(response,'/roll/',status_code=302,target_status_code=200)
         self.assertTemplateUsed(response,'rolls/home.html')
 
     def test_view_function_rejects_non_image_file_on_upload(self):
-        response = self.client.post('/roll/',{'photo_url':self.not_image},follow=True)
+        response = self.client.post('/roll/upload/',{'photo_url':self.not_image},follow=True)
         # If it is a redirect, response does not contain a template
-        self.assertTemplateUsed(response,'home/index.html')
+        self.assertTemplateUsed(response,'rolls/upload.html')

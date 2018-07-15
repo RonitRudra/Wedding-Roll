@@ -1,0 +1,10 @@
+{% extends 'master_template.html' %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- <input type="file" name="upload_photo" id="id_upload_photo" /></p> -->
+    {{form.as_p}}
+    <button type="submit" id="id_submit">Upload</button>
+</form>
+{% endblock %}
