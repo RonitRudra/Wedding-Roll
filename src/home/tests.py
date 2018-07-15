@@ -19,3 +19,11 @@ class HomeTest(TestCase):
 	def test_signup_page_is_served(self):
 		response = self.client.get('/signup/')
 		self.assertTemplateUsed(response,'home/signup.html')
+
+	def test_signup_page_account_creation_redirects_to_home(self):
+		response = self.client.post('/signup/',{'email':'adam200@gmail.com',
+			'password1':'password123','password2':'password123'})
+		# after succesful post request, it should redirect to home page
+		# status code will be 200 if form is not valid
+		# status code will be 405 if post method is forbidden
+		self.assertRedirects(response,'/',status_code=302,target_status_code=200)

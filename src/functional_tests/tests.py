@@ -65,4 +65,22 @@ class LiveTest(LiveServerTestCase):
 		signup_submit_button = self.browser.find_element_by_id('id_submit_button')
 		self.assertEqual('SignUp',signup_submit_button.get_attribute("innerHTML"))
 
+		# He starts filling out the form
+		signup_email_field.send_keys('adam2000@gmail.com')
+		signup_password1_field.send_keys('password123')
+		signup_password2_field.send_keys('password123')
+		signup_submit_button.click()
+		## Alternate method
+		# signup_password2_field.send_keys(Keys.ENTER)
+		##
+
+		# He is redirected to the login page
+		curr_url = self.browser.current_url
+		self.assertEqual(curr_url,self.BASE_URL+'/')
+		# A message is displayed that his account has been created
+		tag = self.browser.find_element_by_tag_name('body')
+		self.assertIn('Your Account Has Been Created! Go Ahead and Log in!!',tag.text)
+
+
+
 		#self.fail(msg='Test Not Complete')
