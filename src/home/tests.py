@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.hashers import make_password
@@ -122,3 +123,15 @@ class PhotoUpload(TestCase):
         response = self.client.post('/roll/upload/',{'photo_url':self.not_image},follow=True)
         # If it is a redirect, response does not contain a template
         self.assertTemplateUsed(response,'rolls/upload.html')
+
+class Logout(TestCase):
+    def setUp(self):
+        user = UserAuth.objects.create(email='testuser@email.com',
+                                       password=make_password('password123'))
+        user.save()
+        self.client.login(username='testuser@email.com', password='password123')
+
+    def test_logged_in_user_is_logged_out(self):
+        response = self.client.get('/logout/',follow=True)
+        self.assertRedirects(response,'/',status_code=302,target_status_code=200)
+        self.assertIsInstance(response.context['user'],AnonymousUser)

@@ -125,4 +125,9 @@ class LiveTest(LiveServerTestCase):
         tag = self.browser.find_element_by_tag_name('body')
         self.assertIn('Oops! No Photos Have Been Uploaded Yet!!',tag.text)
         self.assertIn('Your Photo Has Been Uploaded But Will NOT Be Visible Untill Jane Or Joe Approve It.',tag.text)
-        #self.fail(msg='Test Not Complete')
+        
+        # He has no choice but to wait for either Joe or Jane to approve his photos
+        # So, He logs out (there is a logout button at the bottom)
+
+        logout_button = self.browser.find_element_by_id('id_logout')
+        logout_button.click()
