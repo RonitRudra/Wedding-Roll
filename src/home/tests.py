@@ -57,18 +57,16 @@ class HomeTest(TestCase):
         self.assertTrue(flag,'Object was created')
 
 
-class LoginTest(TestCase):
+# class UserTestCase(TestCase):
 
-    def setUp(self):
-        self.credentials = {
-            'email': 'adam2000@gmail.com',
-            'password': 'password123'}
-        UserAuth.objects.create_user(**self.credentials)
-    
-    def test_login(self):
-        # login
-        client = Client()
-        response = client.post('/', **self.credentials,follow=True)
-        user = UserAuth.objects.get(email="adam2000@gmail.com")
-        print(response.context['user'])
-        self.assertEqual(response.context['user'],user.email)
+#     def setUp(self):
+#         self.client = Client()
+
+#     def testLogin(self):
+#         print(UserAuth.objects.all()) # returns []
+#         response = self.client.post('/signup/', 
+#                             { 'email':'foo', 
+#                               'password1':'bar', 
+#                               'password2':'bar' } )
+#         print(UserAuth.objects.all()) # returns one user
+#         print(UserAuth.objects.all()[0].is_authenticated) # returns True

@@ -1,5 +1,5 @@
 # FUNCTIONAL TESTS INVOLVING USER STORIES
-
+import os
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -93,4 +93,15 @@ class LiveTest(LiveServerTestCase):
 		# Voila! he is logged in and is presented with a page.
 		curr_url = self.browser.current_url
 		self.assertEqual(curr_url,self.BASE_URL+'/roll/')
+		
+		# He Sees "Oops! No Photos Have Been Uploaded Yet!!".
+		# Below, He finds a field with a button which says "Upload Files"
+		tag = self.browser.find_element_by_tag_name('body')
+		self.assertIn('Oops! No Photos Have Been Uploaded Yet!!',tag.text)
+
+
+		upload_photo_button = self.browser.find_element_by_id('id_upload_photo')
+		upload_photo_button.send_keys(os.getcwd()+"/image.jpeg")
+		submit_button = self.browser.find_element_by_id('id_submit')
+		submit_button.click()
 		#self.fail(msg='Test Not Complete')

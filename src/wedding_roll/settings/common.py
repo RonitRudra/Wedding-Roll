@@ -120,8 +120,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
 AUTH_USER_MODEL = 'users.UserAuth'
 
 AUTHENTICATION_BACKENDS = ('users.backends.UserAuthBackend',

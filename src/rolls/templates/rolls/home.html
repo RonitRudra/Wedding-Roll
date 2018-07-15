@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>Oops! No Photos Have Been Uploaded Yet!!</h1>
+<form method="post">
+	{% csrf_token %}
+	<input type="file" name="upload_photo" id="id_upload_photo" /></p>
+    <button type="submit" id="id_submit">Upload</button>
+</form>
+</body>
+</html>

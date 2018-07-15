@@ -4,3 +4,6 @@ from django.views.generic import TemplateView
 
 class Home(TemplateView):
 	template_name='rolls/home.html'
+
+	def post(self,request):
+		return redirect('rolls:home')
