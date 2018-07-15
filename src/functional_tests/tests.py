@@ -32,9 +32,20 @@ class LiveTest(LiveServerTestCase):
 		# The page says: "Welcome to Jane and Joe's Wedding Album"
 		tag = self.browser.find_element_by_tag_name('body')
 		self.assertIn("Welcome to Jane and Joe's Wedding Album",tag.text)
+
+		# He also notices the tab title "J&J's Wedding Roll"
+		title = self.browser.title
+		self.assertEqual("J&J's Wedding Roll",title)
 		
 		# Below, there is a login form which asks for an email
-		# address and password.
-		# He also notices the tab title "J&J's Wedding Roll"
+		# address and password and a submit button below it.
+		email_field = self.browser.find_element_by_id('id_email')
+		password_field = self.browser.find_element_by_id('id_password')
+		submit_button = self.browser.find_element_by_id('id_submit_button')
+		self.assertEqual('Login',submit_button.get_attribute("innerHTML"))
+
+
+
+		
 
 		#self.fail(msg='Test Not Complete')
