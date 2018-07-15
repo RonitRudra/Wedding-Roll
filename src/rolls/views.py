@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, ListView
 from .forms import UploadForm
+from .models import Uploads
 from users.models import UserAuth
 # Create your views here.
 
@@ -13,9 +14,12 @@ class Home(TemplateView):
         return render(request,self.template_name,{'form':form})
 
     def post(self,request, *args, **kwargs):
-        form=UploadForm(request.POST,request.FILES,instance=UserAuth.objects.get(email=request.user))
+        form=UploadForm(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
+            # Poster ID is required, hence assign through request
+            obj = form.save(commit=False)
+            obj.uploader = request.user
+            obj.save()
             messages.add_message(request,messages.SUCCESS,'Your Photo Was Uploaded!')
             return redirect('rolls:home')
         else:
