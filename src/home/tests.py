@@ -1,10 +1,12 @@
 from django.test import TestCase, Client
+from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.hashers import make_password
 from users.models import UserAuth
 
 # Create your tests here.
 
-class HomeTest(TestCase):
+class HomePageAndSignup(TestCase):
 
     def setUp(self):
         pass
@@ -57,16 +59,34 @@ class HomeTest(TestCase):
         self.assertTrue(flag,'Object was created')
 
 
-# class UserTestCase(TestCase):
+class UserLogin(TestCase):
+    def setUp(self):
+        # If make_password is not used then the password gets stored as plain text
+        self.user = UserAuth.objects.create(email='user1@email.com',
+                                            password=make_password('password123'))
 
-#     def setUp(self):
-#         self.client = Client()
+    def test_does_not_authenticate_unregistered_user(self):
+        retval = authenticate(username='user2@email.com',password='password123')
+        self.assertEqual(retval,None)
 
-#     def testLogin(self):
-#         print(UserAuth.objects.all()) # returns []
-#         response = self.client.post('/signup/', 
-#                             { 'email':'foo', 
-#                               'password1':'bar', 
-#                               'password2':'bar' } )
-#         print(UserAuth.objects.all()) # returns one user
-#         print(UserAuth.objects.all()[0].is_authenticated) # returns True
+    def test_does_not_authenticate_invalid_combination(self):
+        retval = authenticate(username='user1@email.com',password='password1')
+        self.assertEqual(retval,None)
+
+
+    def test_authenticates_registered_user(self):
+        retval = authenticate(username='user1@email.com',password='password123')
+        self.assertEqual(retval,self.user)
+
+
+    def test_login_page_redirects_to_rolls_home_on_succesful_login(self):
+        response = self.client.post('/',{'email':'user1@email.com',
+                                         'password':'password123'})
+        self.assertRedirects(response,'/roll/',status_code=302,target_status_code=200)
+
+    def test_login_after_successful_authentication(self):
+        response = self.client.post('/', 
+                                    {'email':'user1@email.com',
+                                     'password':'password123'}, follow=True)
+        self.assertTrue(response.context['user'].is_active)
+        
