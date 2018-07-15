@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
-from accounts.models import UserAuth
+from users.models import UserAuth
 
 # Create your tests here.
 
@@ -30,10 +30,28 @@ class HomeTest(TestCase):
 		# status code will be 405 if post method is forbidden
 		self.assertRedirects(response,'/',status_code=302,target_status_code=200)
 
-	def test_signup_page_creates_db_entry(self):
+
+	def test_signup_page_creates_db_entry_on_valid_data(self):
+		# move it to users.tests
 		response = self.client.post('/signup/',{'email':'adam2000@gmail.com',
 			'password1':'password123','password2':'password123'})
 		try:
 			obj = UserAuth.objects.get(email='adam2000@gmail.com')
 		except ObjectDoesNotExist:
 			self.assertTrue(False,'Entry was not created in DB')
+
+	def test_signup_page_rejects_different_passwords_and_redirects_to_signup(self):
+		response = self.client.post('/signup/',{'email':'adam2000@gmail.com',
+			'password1':'password123','password2':'password12'})
+
+		self.assertRedirects(response,'/signup/',status_code=302,target_status_code=200)
+
+	def test_signup_page_does_not_create_db_on_invalid_data(self):
+		response = self.client.post('/signup/',{'email':'adam2000gmail.com',
+			'password1':'password123','password2':'password12'})
+		flag=False
+		try:
+			obj = UserAuth.objects.get(email='adam2000@gmail.com')
+		except ObjectDoesNotExist:
+			flag=True
+		self.assertTrue(flag,'Object was created')
