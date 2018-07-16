@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.hashers import make_password
@@ -51,3 +51,11 @@ class SignUp(TemplateView):
 		messages.add_message(request,messages.SUCCESS,
 			'Your Account Has Been Created! Go Ahead and Log in!!')
 		return redirect('home:home')
+
+
+class Logout(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.add_message(request,messages.SUCCESS,'You have been logged out.')
+        return redirect('home:home')

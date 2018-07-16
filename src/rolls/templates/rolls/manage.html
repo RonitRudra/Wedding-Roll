@@ -1,0 +1,22 @@
+{% extends 'master_template.html' %}
+
+{% block content %}
+    {% if uploads_list|length > 0 %}
+    <form method="post">
+        {% csrf_token %}
+        {% for upload in uploads_list %}
+        <div>
+            <li>
+                <input type="checkbox" name="{{upload}}"
+                       id="id_{{upload}}"
+                       value="{{upload.id}}" />{{upload.date_posted}} by {{upload}}<a href="/media/{{upload.photo_url}}">{{upload.description}}</a>
+            </li>
+            <img src="/media/{{upload.photo_url}}" width="240" height="120" />
+        </div>
+        {% endfor %}
+        <button type="submit" id="id_approve">Approve</button>
+    </form>
+    {% else %}
+<h1>No Pending Requests Yet!!</h1>
+    {% endif %}
+{% endblock %}
