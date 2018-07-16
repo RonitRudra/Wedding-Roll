@@ -1,6 +1,10 @@
 {% extends 'master_template.html' %}
 {% block content %}
     {% if uploads_list|length > 0 %}
+        <div>
+            <p>Sort By: <input type="button" id="id_sort_likes" name="sort_likes" value="Likes" /> <input type="button" id="id_sort_date" name="sort_date" value="Date" /></p>
+        </div>
+    
         {% for upload in uploads_list %}
             <div>
                 <li>{{upload.date_posted}}<a href="/media/{{upload.photo_url}}">{{upload.description}}</a></li>
@@ -24,20 +28,20 @@
 
 {% block scripts %}
 <script>
-$('#like').click(function(){
-      $.ajax({
-               type: "POST",
-               url: "{% url 'rolls:like' %}",
-               data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-               dataType: "json",
-               success: function(response) {
-                   var elem = document.getElementById("like");
-                   elem.value = 'Like ' + response.likes_count;
-                },
-                error: function(rs, e) {
-                       alert(rs.responseText);
-                }
-          });
-    })
-    </script>
+    $('#like').click(function(){
+          $.ajax({
+                   type: "POST",
+                   url: "{% url 'rolls:like' %}",
+                   data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                   dataType: "json",
+                   success: function(response) {
+                       var elem = document.getElementById("like");
+                       elem.value = 'Like ' + response.likes_count;
+                    },
+                    error: function(rs, e) {
+                           alert(rs.responseText);
+                    }
+              });
+        })
+</script>
 {% endblock %}
