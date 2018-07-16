@@ -2,7 +2,7 @@
 {% block content %}
     {% if uploads_list|length > 0 %}
         <div>
-            <p>Sort By: <input type="button" id="id_sort_likes" name="sort_likes" value="Likes" /> <input type="button" id="id_sort_date" name="sort_date" value="Date" /></p>
+            <p>Sort By: <a href="order=date">Date</a> <a href="order=likes">Likes</a>
         </div>
     
         {% for upload in uploads_list %}
@@ -11,7 +11,7 @@
                 <img src="/media/{{upload.photo_url}}" width="480" height="240" />
             </div> 
             <div>
-                <p><input type="button" id="like" name="{{ upload.slug }}" value="like {{upload.total_likes}}" /></p>
+                <p><input type="button" class="like" id="{{upload.slug}}" name="{{ upload.slug }}" value="like {{upload.total_likes}}" /></p>
             </div>
         {% endfor %}
     {% else %}
@@ -28,15 +28,16 @@
 
 {% block scripts %}
 <script>
-    $('#like').click(function(){
-          $.ajax({
-                   type: "POST",
-                   url: "{% url 'rolls:like' %}",
-                   data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
-                   dataType: "json",
-                   success: function(response) {
-                       var elem = document.getElementById("like");
-                       elem.value = 'Like ' + response.likes_count;
+    $('.like').click(function () {
+        var id = $(this).attr("id");
+            $.ajax({
+                type: "POST",
+                url: "{% url 'rolls:like' %}",
+                data: { 'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{ csrf_token }}' },
+                dataType: "json",
+                success: function (response) {
+                    var elem = document.getElementById(id);
+                    elem.value = 'Like ' + response.likes_count;
                     },
                     error: function(rs, e) {
                            alert(rs.responseText);

@@ -5,7 +5,7 @@ from .views import Home, Upload, Manage, like
 # the app_name attribute needs to be set to facilitate include in root urls.py
 app_name = 'rolls'
 
-urlpatterns = [url(r'^$',Home.as_view(),name='home'), 
+urlpatterns = [url(r'^(/?order=(?P<order>[a-zA-Z\-]+))?$',Home.as_view(),name='home'), 
                url(r'^upload/$',Upload.as_view(),name='upload'),
                url(r'^manage/$',Manage.as_view(),name='manage'),
                url(r'^like/$',like,name='like')

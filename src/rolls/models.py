@@ -15,6 +15,7 @@ class Uploads(models.Model):
     description = models.TextField(default='')
     slug = models.SlugField()
     likes = models.ManyToManyField(UserAuth,related_name='likes')
+    total = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = _('upload')

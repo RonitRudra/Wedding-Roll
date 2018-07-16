@@ -14,8 +14,28 @@ class Home(ListView):
     template_name='rolls/home.html'
     model = Uploads
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.kwargs['order'] not in [None,'date-desc',
+                                        'date-asc','likes-desc',
+                                        'likes-asc']:
+            return redirect('rolls:home')
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
-        return Uploads.objects.filter(is_approved=True).order_by('-date_posted')
+        query_set = Uploads.objects.filter(is_approved=True)
+        query = self.kwargs['order']
+        if query is not None:
+            if query == 'date-desc':
+                return query_set.order_by('-date_posted') 
+            elif query == 'date-asc':
+                return query_set.order_by('date_posted') 
+            elif query == 'likes-desc':
+                return query_set.order_by('-total') 
+            elif query == 'likes-asc':  
+                return query_set.order_by('total')
+        else:
+            return query_set
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,8 +104,12 @@ def like(request):
 
         if photo.likes.filter(id=user.id).exists():
             photo.likes.remove(user)
+            photo.total -=1
+            photo.save()
         else:
             photo.likes.add(user)
+            photo.total+=1
+            photo.save()
 
     context = {'likes_count':photo.total_likes}
     return HttpResponse(json.dumps(context),content_type='applications/json')
