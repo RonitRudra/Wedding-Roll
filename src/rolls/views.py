@@ -57,4 +57,12 @@ class Manage(ListView):
         return Uploads.objects.filter(is_approved=False).order_by('-date_posted')
 
     def post(self,request, *args, **kwargs):
-        pass
+        for key,val in request.POST.items():
+            if key == 'csrfmiddlewaretoken':
+                pass
+            else:
+                obj = Uploads.objects.get(id=val)
+                print(obj)
+                obj.is_approved = True
+                obj.save()
+        return redirect('rolls:home')

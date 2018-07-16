@@ -11,7 +11,7 @@ class Uploads(models.Model):
     date_posted = models.DateTimeField(default=now)
     uploader = models.ForeignKey(UserAuth, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
-    description = models.TextField(blank=True,default='')
+    description = models.TextField(default='')
 
     class Meta:
         verbose_name = _('upload')

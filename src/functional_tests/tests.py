@@ -283,4 +283,39 @@ class JoeAndUserApprovals(LiveServerTestCase):
         # He is taken to the Manage Page
         self.assertEqual(self.browser.current_url,self.BASE_URL+'/roll/manage/')
 
-        #
+        # The photo pending approval is visible on the page with a checkbox next to it.
+        try:
+            self.browser.find_element_by_link_text("Adam's First Photo Upload")
+            img = self.browser.find_element_by_tag_name('img')
+            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+
+        except:
+            self.fail('Joe could not see image uploaded by Adam')
+        
+        try:
+            check_boxes = self.browser.find_elements_by_tag_name('input')
+            for cb in check_boxes:
+                if cb.get_attribute('name') == 'adam2000@email.com':
+                    cb.click()
+        except:
+            self.fail("The Checkbox did not have Adam's email address.")
+
+        # Joe clicks on the checkbox and presses Approve.
+        
+        self.browser.find_element_by_id('id_approve').click()
+
+        # He is redirected to the rolls page, which now has the approved photo
+        try:
+            self.browser.find_element_by_link_text("Adam's First Photo Upload")
+            img = self.browser.find_element_by_tag_name('img')
+            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+
+        except:
+            self.fail('Joe could not see the approved image')
+
+        # Also, the manage pending approval shows 0.
+        requests_button = self.browser.find_element_by_id('id_manage')
+        self.assertIn('(0)',requests_button.get_attribute('innerHTML'))
+
+        # Happy, he logs out.
+        self.browser.find_element_by_id('id_logout').click()
