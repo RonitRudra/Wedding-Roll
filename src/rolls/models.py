@@ -16,3 +16,6 @@ class Uploads(models.Model):
     class Meta:
         verbose_name = _('upload')
         verbose_name_plural = _('uploads')
+
+    def __str__(self):
+        return str(self.uploader.email)

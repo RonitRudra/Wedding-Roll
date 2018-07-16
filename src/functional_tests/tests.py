@@ -134,8 +134,9 @@ class NewUser(LiveServerTestCase):
 
         logout_button = self.browser.find_element_by_id('id_logout')
         logout_button.click()
+        self.assertEqual(self.browser.current_url,self.BASE_URL+'/')
 
-class JoeAndJane(LiveServerTestCase):
+class JoeAndJaneNewImage(LiveServerTestCase):
 
     def setUp(self):
         self.BASE_URL = self.live_server_url
@@ -183,3 +184,103 @@ class JoeAndJane(LiveServerTestCase):
 
         # He is, as expected redirected to the rolls page
         # Since, he is the owner, the photo is auto-approved and appears in the page
+        try:
+            photo = self.browser.find_elements_by_tag_name('img')
+        except:
+            self.fail('Image did not appear after posting')
+
+        # Happy, He logs off
+        logout_button = self.browser.find_element_by_id('id_logout')
+        logout_button.click()
+        # Now Jane Logs in
+        login_email_field = self.browser.find_element_by_id('id_email')
+        login_password_field = self.browser.find_element_by_id('id_password')
+        login_submit_button = self.browser.find_element_by_id('id_submit_button')
+
+        login_email_field.send_keys('jane456@email.com')
+        login_password_field.send_keys('password123')
+        login_submit_button.click()
+
+        # She sees the photo that Joe uploaded
+        try:
+            self.browser.find_element_by_link_text("Joe's First Photo Upload")
+            img = self.browser.find_element_by_tag_name('img')
+            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+
+        except:
+            self.fail('Jane could not see image uploaded by Joe')
+
+
+class JoeAndUserApprovals(LiveServerTestCase):
+    '''
+    Assumes users have already created accounts
+    '''
+    def setUp(self):
+        self.BASE_URL = self.live_server_url
+        self.browser = webdriver.Chrome()
+        # admin
+        user_joe = UserAuth.objects.create_user(email='joe123@email.com')
+        user_joe.set_password('password123')
+        user_joe.is_owner = True
+        user_joe.save()
+        # standard user
+        user_adam = UserAuth.objects.create_user(email='adam2000@email.com')
+        user_adam.set_password('password123')
+        user_adam.save()
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_approvals(self):
+        # Adam Logs In first and uploads a photo
+        self.browser.get(self.BASE_URL)
+        login_email_field = self.browser.find_element_by_id('id_email')
+        login_password_field = self.browser.find_element_by_id('id_password')
+        login_submit_button = self.browser.find_element_by_id('id_submit_button')
+
+        login_email_field.send_keys('adam2000@email.com')
+        login_password_field.send_keys('password123')
+        login_submit_button.click()
+        
+        self.browser.find_element_by_id('id_upload').click()
+
+        upload_photo_button = self.browser.find_element_by_id('id_photo_url')
+        upload_photo_button.send_keys(os.path.join(os.getcwd(),"image.jpeg"))
+
+        description_field = self.browser.find_element_by_id('id_description')
+        description_field.send_keys("Adam's First Photo Upload")
+        submit_button = self.browser.find_element_by_id('id_submit')
+        submit_button.click()
+
+        # He then Logs Out. Previous Tests verified photo did not appear
+        logout_button = self.browser.find_element_by_id('id_logout')
+        logout_button.click()
+
+        # Now Joe Logs In
+        self.browser.get(self.BASE_URL)
+        login_email_field = self.browser.find_element_by_id('id_email')
+        login_password_field = self.browser.find_element_by_id('id_password')
+        login_submit_button = self.browser.find_element_by_id('id_submit_button')
+
+        login_email_field.send_keys('joe123@email.com')
+        login_password_field.send_keys('password123')
+        login_submit_button.click()
+
+        # verify that photo is indeed not present yet
+        try:
+            photo = self.browser.find_elements_by_tag_name('img')
+            self.fail("Image appeared when it shouldn't have")
+        except:
+            pass
+
+        # Joe sees a '(1)' next to Manage Pending Requests.
+        # This Tells him that 1 upload request is pending
+        # He clicks it
+        requests_button = self.browser.find_element_by_id('id_manage')
+        self.assertIn('(1)',requests_button.get_attribute('innerHTML'))
+        requests_button.click()
+
+        # He is taken to the Manage Page
+        self.assertEqual(self.browser.current_url,self.BASE_URL+'/roll/manage/')
+
+        #

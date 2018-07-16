@@ -13,6 +13,11 @@ class Home(ListView):
     def get_queryset(self):
         return Uploads.objects.filter(is_approved=True).order_by('-date_posted')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['num_pending'] = Uploads.objects.filter(is_approved=False).count()
+        return context
+
 
 
 class Upload(TemplateView):
@@ -43,4 +48,13 @@ class Upload(TemplateView):
         else:
             messages.add_message(request,messages.ERROR,'File is NOT an Image')
             return redirect('rolls:upload')
-        
+      
+class Manage(ListView):
+    template_name = 'rolls/manage.html'
+    model = Uploads
+
+    def get_queryset(self):
+        return Uploads.objects.filter(is_approved=False).order_by('-date_posted')
+
+    def post(self,request, *args, **kwargs):
+        pass
