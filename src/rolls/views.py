@@ -1,5 +1,9 @@
+import json
+
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView, ListView
 from .forms import UploadForm
 from .models import Uploads
@@ -66,3 +70,22 @@ class Manage(ListView):
                 obj.is_approved = True
                 obj.save()
         return redirect('rolls:home')
+
+@require_POST
+def like(request):
+    """
+    Not A View that returns an HTML Page.
+    Handles AJAX calls from the Like Button.
+    """
+    if request.method == 'POST':
+        user = request.user
+        slug = request.POST.get('slug',None)
+        photo = get_object_or_404(Uploads,slug=slug)
+
+        if photo.likes.filter(id=user.id).exists():
+            photo.likes.remove(user)
+        else:
+            photo.likes.add(user)
+
+    context = {'likes_count':photo.total_likes}
+    return HttpResponse(json.dumps(context),content_type='applications/json')

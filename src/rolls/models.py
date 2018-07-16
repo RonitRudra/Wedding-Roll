@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
@@ -12,6 +13,8 @@ class Uploads(models.Model):
     uploader = models.ForeignKey(UserAuth, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
     description = models.TextField(default='')
+    slug = models.SlugField()
+    likes = models.ManyToManyField(UserAuth,related_name='likes')
 
     class Meta:
         verbose_name = _('upload')
@@ -19,3 +22,13 @@ class Uploads(models.Model):
 
     def __str__(self):
         return str(self.uploader.email)
+
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
+    def save(self,*args,**kwargs):
+        self.slug=slugify('{}-{}-{}'.format(str(self.uploader),
+                                            str(self.date_posted),
+                                            self.description))
+        super(Uploads,self).save(*args,**kwargs)

@@ -6,6 +6,9 @@
                 <li>{{upload.date_posted}}<a href="/media/{{upload.photo_url}}">{{upload.description}}</a></li>
                 <img src="/media/{{upload.photo_url}}" width="480" height="240" />
             </div> 
+            <div>
+                <p><input type="button" id="like" name="{{ upload.slug }}" value="like {{upload.total_likes}}" /></p>
+            </div>
         {% endfor %}
     {% else %}
         <h1>Oops! No Photos Have Been Uploaded Yet!!</h1>
@@ -17,4 +20,24 @@
     {% if user.is_owner %}
     <a href="{% url 'rolls:manage' %}" id="id_manage">Manage Pending Requests ({{num_pending}})</a>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+$('#like').click(function(){
+      $.ajax({
+               type: "POST",
+               url: "{% url 'rolls:like' %}",
+               data: {'slug': $(this).attr('name'), 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+               dataType: "json",
+               success: function(response) {
+                   var elem = document.getElementById("like");
+                   elem.value = 'Like ' + response.likes_count;
+                },
+                error: function(rs, e) {
+                       alert(rs.responseText);
+                }
+          });
+    })
+    </script>
 {% endblock %}
