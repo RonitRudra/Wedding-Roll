@@ -20,12 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'p@x=051yrh@_z)!r5@f#_uvf&*2#981ri8de$phf^6!hx45+th'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -40,6 +37,7 @@ INSTALLED_APPS = [
     'home',
     'users',
     'rolls',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +122,9 @@ AUTH_USER_MODEL = 'users.UserAuth'
 
 AUTHENTICATION_BACKENDS = ('users.backends.UserAuthBackend',
                            )
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
+    'CacheControl': 'max-age=94608000',
+}
+

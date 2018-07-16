@@ -7,8 +7,8 @@
     
         {% for upload in uploads_list %}
             <div>
-                <li>{{upload.date_posted}}<a href="/media/{{upload.photo_url}}">{{upload.description}}</a></li>
-                <img src="/media/{{upload.photo_url}}" width="480" height="240" />
+                <li>{{upload.date_posted}}<a href="{{upload.photo_url.url}}">{{upload.description}}</a></li>
+                <img src="{{upload.photo_url.url}}" width="480" height="240" />
             </div> 
             <div>
                 <p><input type="button" class="like" id="{{upload.slug}}" name="{{ upload.slug }}" value="like {{upload.total_likes}}" /></p>
