@@ -13,7 +13,7 @@ class Uploads(models.Model):
     uploader = models.ForeignKey(UserAuth, on_delete=models.CASCADE)
     is_approved = models.BooleanField(default=False)
     description = models.TextField(default='')
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=255)
     likes = models.ManyToManyField(UserAuth,related_name='likes')
     total = models.IntegerField(default=0)
 
