@@ -25,7 +25,7 @@ class Home(TemplateView):
 				if user is None:
 					raise ValidationError(message='Validation Failed')
 			except (ObjectDoesNotExist,ValidationError):
-				messages.add_message(request,messages.ERROR,'Incorrect Values')
+				messages.add_message(request,messages.ERROR,'Username Or Password Does Not Match')
 				return redirect('home:home')
 			login(request,user)
 			return redirect('rolls:home')
@@ -34,23 +34,25 @@ class Home(TemplateView):
 			return redirect('home:home')
 
 class SignUp(TemplateView):
-	template_name = 'home/signup.html'
+    template_name = 'home/signup.html'
 
-	def post(self,request):
-		email = request.POST['email']
-		pw1 = request.POST['password1']
-		pw2 = request.POST['password2']
-		if pw1 != pw2:
-			return redirect('home:signup')
-		else:
-			try:
-				pw = make_password(pw1)
-				user = UserAuth.objects.create(email=email,password=pw)
-			except:
-				return redirect('home:signup')
-		messages.add_message(request,messages.SUCCESS,
-			'Your Account Has Been Created! Go Ahead and Log in!!')
-		return redirect('home:home')
+    def post(self,request):
+        email = request.POST['email']
+        pw1 = request.POST['password1']
+        pw2 = request.POST['password2']
+        if pw1 != pw2:
+            messages.add_message(request,messages.ERROR,'Passwords Do Not Match')
+            return redirect('home:signup')
+        else:
+            try:
+                pw = make_password(pw1)
+                user = UserAuth.objects.create(email=email,password=pw)
+            except:
+                messages.add_message(request,messages.ERROR,'User Already Exists')
+                return redirect('home:signup')
+            messages.add_message(request,messages.SUCCESS,
+		    'Your Account Has Been Created! Go Ahead and Log in!!')
+            return redirect('home:home')
 
 
 class Logout(TemplateView):

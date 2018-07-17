@@ -1,27 +1,68 @@
-<html>
+﻿<html lang="en">
 <head>
     <title>J&J's Wedding Roll</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="A Wedding Roll">
     <meta name="author" content="Ronit Rudra">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
-    <body>
+    <body class="body">
         {% load static %}
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-                {{ message }}</li>
-                {% endfor %}
-        </ul>
-        {% endif %}
 
-        {% block content %}
-        {% endblock %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        {% block scripts %}
-        {% endblock %}
+        <div class="container-fluid">
+            {% block nav %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="true" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'home:home' %}">J&J Wedding Album</a>
+
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            {% if user.is_authenticated %}
+                            <a class="nav-link" href="{% url 'rolls:upload' %}">Upload <span class="sr-only">(current)</span></a>
+                            {% endif %}
+                        </li>
+
+                    </ul>
+                    <ul class="form-inline my-2 my-lg-0">
+                        {% if user.is_authenticated %}
+                        <a class="nav-item nav-link active" href="{% url 'home:logout' %}">Logout</a>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+            {% endblock %}
+
+
+            {% block message%}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                <ul class="messages">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message }}
+                </ul>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endblock %}
+
+            <div align="center">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            {% block scripts %}
+            {% endblock %}
+        </div>
     </body>
 </html>

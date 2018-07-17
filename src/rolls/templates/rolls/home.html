@@ -1,29 +1,44 @@
 {% extends 'master_template.html' %}
 {% block content %}
-    {% if uploads_list|length > 0 %}
-        <div>
-            <p>Sort By: <a href="order=date">Date</a> <a href="order=likes">Likes</a>
-        </div>
-    
-        {% for upload in uploads_list %}
-            <div>
-                <li>{{upload.date_posted}}<a href="{{upload.photo_url.url}}">{{upload.description}}</a></li>
-                <img src="{{upload.photo_url.url}}" width="480" height="240" />
-            </div> 
-            <div>
-                <p><input type="button" class="like" id="{{upload.slug}}" name="{{ upload.slug }}" value="like {{upload.total_likes}}" /></p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <h1>Oops! No Photos Have Been Uploaded Yet!!</h1>
-    {% endif %}
-
-    <a href="{% url 'rolls:upload' %}" id="id_upload">Upload A Photo</a>
-    <a href="{% url 'home:logout' %}" id="id_logout">Logout</a>
-
+<h1 class="my-4 text-center text-lg-left">Wedding Gallery</h1>
     {% if user.is_owner %}
-    <a href="{% url 'rolls:manage' %}" id="id_manage">Manage Pending Requests ({{num_pending}})</a>
+<a align="center" class="btn btn-info" href="{% url 'rolls:manage' %}" id="id_manage">Manage Pending Requests ({{num_pending}})</a>
     {% endif %}
+{% if uploads_list|length > 0 %}
+<div align="right">
+    <div class="btn-group">
+        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Date</button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="order=date-asc">Ascending</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="order=date-desc">Descending</a>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Likes</button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="order=likes-asc">Ascending</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="order=likes-desc">Descending</a>
+        </div>
+    </div>
+</div>
+<div class="row text-center text-sm-left">
+    {% for upload in uploads_list %}
+
+    <div class="col-lg-3 col-md-4 col-xs-6">
+        {{upload.date_posted|date}} : {{  upload.description}}
+        <a href="{{upload.photo_url.url}}">
+            <img class="img-fluid img-thumbnail" src="{{upload.photo_url.url}}">
+        </a>
+        <input type="button" class="like" id="{{upload.slug}}" name="{{ upload.slug }}" value="like {{upload.total_likes}}" />
+    </div>
+    {% endfor %}
+</div>
+    {% else %}
+<h1>Oops! No Photos Have Been Uploaded Yet!!</h1>
+    {% endif %}
+
 {% endblock %}
 
 {% block scripts %}
