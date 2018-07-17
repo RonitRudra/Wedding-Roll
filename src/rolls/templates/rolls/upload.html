@@ -1,10 +1,17 @@
 {% extends 'master_template.html' %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <!-- <input type="file" name="upload_photo" id="id_upload_photo" /></p> -->
-    {{form.as_p}}
-    <button type="submit" id="id_submit">Upload</button>
-</form>
-{% endblock %}
+<div class="w-25 p-3">
+    <form method="post" enctype="multipart/form-data" class="form-signin">
+        {% csrf_token %}
+        <!-- <input type="file" name="upload_photo" id="id_upload_photo" /></p> -->
+        <label for="id_photo_url">UPLOAD:</label>
+        <input type="file" name="photo_url" required id="id_photo_url" class="form-control" />
+        <br />
+        <label for="id_description">DESCRIPTION:</label>
+        <textarea name="description" cols="40" rows="5" required id="id_description" class="form-control"></textarea>
+        <br />
+        <button type="submit" id="id_submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+    {% endblock %}
