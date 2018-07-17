@@ -1,21 +1,28 @@
 {% extends 'master_template.html' %}
-
 {% block content %}
+<h1 class="my-4 text-center text-lg-left">Choose Photos That Should Be Visible</h1>
+<br />
     {% if uploads_list|length > 0 %}
-    <form method="post">
-        {% csrf_token %}
+<form method="post">
+    <button type="submit" id="id_approve" class="btn btn-info" align="center">Approve</button>
+    <br />
+    {% csrf_token %}
+    <div class="row text-center text-sm-left">
         {% for upload in uploads_list %}
-        <div>
-            <li>
-                <input type="checkbox" name="{{upload}}"
-                       id="id_{{upload}}"
-                       value="{{upload.id}}" />{{upload.date_posted}} by {{upload}}<a href="/media/{{upload.photo_url.url}}">{{upload.description}}</a>
-            </li>
-            <img src="/media/{{upload.photo_url.url}}" width="240" height="120" />
+        <div class="col-lg-3 col-md-4 col-xs-6">
+            <input type="checkbox" name="{{upload}}"
+                   id="id_{{upload}}"
+                   value="{{upload.id}}" /> <strong>{{upload.description}}</strong>
+            <a href="{{upload.photo_url.url}}">
+                <img src="{{upload.photo_url.url}}" class="img-fluid img-thumbnail" />
+            </a>
+                <p>{{upload.date_posted}} by <i>{{upload}}</i></p>
         </div>
         {% endfor %}
-        <button type="submit" id="id_approve">Approve</button>
-    </form>
+        <br />
+    </div>
+</form>
+
     {% else %}
 <h1>No Pending Requests Yet!!</h1>
     {% endif %}

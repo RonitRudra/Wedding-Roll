@@ -5,7 +5,7 @@
 <a align="center" class="btn btn-info" href="{% url 'rolls:manage' %}" id="id_manage">Manage Pending Requests ({{num_pending}})</a>
     {% endif %}
 {% if uploads_list|length > 0 %}
-<div align="right">
+<div align="right"><a class="btn btn-outline-dark" style="pointer-events:none;cursor:default">SORT:</a>
     <div class="btn-group">
         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Date</button>
         <div class="dropdown-menu">
@@ -27,11 +27,12 @@
     {% for upload in uploads_list %}
 
     <div class="col-lg-3 col-md-4 col-xs-6">
-        {{upload.date_posted|date}} : {{  upload.description}}
+        <i>{{upload.date_posted|date}}</i> : <strong>{{upload.description|upper}}</strong>
         <a href="{{upload.photo_url.url}}">
             <img class="img-fluid img-thumbnail" src="{{upload.photo_url.url}}">
         </a>
         <input type="button" class="like btn btn-primary" id="{{upload.slug}}" name="{{ upload.slug }}" value="like {{upload.total_likes}}" />
+        by <i>{{upload.uploader}}</i>
     </div>
     {% endfor %}
 </div>
