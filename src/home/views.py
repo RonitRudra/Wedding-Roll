@@ -9,6 +9,10 @@ from .forms import UserLoginForm
 from users.models import UserAuth
 # Create your views here.
 
+class Redir(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return redirect('home:home')
+
 class Home(TemplateView):
 	'''
 	Contains a login form
