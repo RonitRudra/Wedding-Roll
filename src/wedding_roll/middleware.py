@@ -10,7 +10,6 @@ from django.urls import reverse
 EXEMPT_URLS = [re.compile(settings.LOGIN_URL.lstrip('/'))]
 if hasattr(settings,'LOGIN_EXEMPT_URLS'):
     EXEMPT_URLS += [re.compile(x) for x in settings.LOGIN_EXEMPT_URLS]
-    print(EXEMPT_URLS)
 
 
 class Middleware_LoginRequired(object):
@@ -30,7 +29,6 @@ class Middleware_LoginRequired(object):
     def process_view(self,request,view_func,view_args,view_kwargs):
         path = request.path_info.lstrip('/')
         url_is_exempt = any(url.match(path) for url in EXEMPT_URLS)
-        print(url_is_exempt)
         if path == reverse('home:logout').lstrip('/'):
             logout(request)
         if not request.user.is_authenticated and not url_is_exempt:
