@@ -2,7 +2,10 @@
 import os
 from django.test import LiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from django.contrib.auth.hashers import make_password
 from users.models import UserAuth
@@ -15,6 +18,7 @@ class NewUser(LiveServerTestCase):
         # For Windows, you can pass the path of the driver
         # using executable_path=<path>/chromedriver.exe
         self.browser = webdriver.Chrome()
+        self.wait = WebDriverWait(self.browser, 10)
 
     def tearDown(self):
         self.browser.quit()
@@ -79,7 +83,7 @@ class NewUser(LiveServerTestCase):
 
         # He is redirected to the login page
         curr_url = self.browser.current_url
-        self.assertEqual(curr_url,self.BASE_URL+'/')
+        self.assertEqual(curr_url,self.BASE_URL+'/login/')
         # A message is displayed that his account has been created
         tag = self.browser.find_element_by_tag_name('body')
         self.assertIn('Your Account Has Been Created! Go Ahead and Log in!!',tag.text)
@@ -92,7 +96,6 @@ class NewUser(LiveServerTestCase):
         login_email_field.send_keys('adam2000@gmail.com')
         login_password_field.send_keys('password123')
         login_submit_button.click()
-
         # Voila! he is logged in and is presented with a page.
         curr_url = self.browser.current_url
         self.assertEqual(curr_url,self.BASE_URL+'/roll/')
@@ -101,8 +104,15 @@ class NewUser(LiveServerTestCase):
         tag = self.browser.find_element_by_tag_name('body')
         self.assertIn('Oops! No Photos Have Been Uploaded Yet!!',tag.text)
 
-        # Underneath that he sees a button "Upload A Photo"
-        upload_button = self.browser.find_element_by_id('id_upload')
+        try:
+            upload_button =WebDriverWait(self.browser,10).until(
+                EC.presence_of_element_located((By.ID,"id_upload"))
+                )
+        except:
+            self.fail()
+
+        # He sees a tab "Upload A Photo"
+        #upload_button = self.browser.find_element_by_id('id_upload')
         # Since he has a few pictures to upload, he clicks on it
         upload_button.click()
 
@@ -130,11 +140,11 @@ class NewUser(LiveServerTestCase):
         self.assertIn('Your Photo Has Been Uploaded But Will NOT Be Visible Untill Jane Or Joe Approve It.',tag.text)
         
         # He has no choice but to wait for either Joe or Jane to approve his photos
-        # So, He logs out (there is a logout button at the bottom)
+        # So, He logs out (there is a logout button to the top left)
 
         logout_button = self.browser.find_element_by_id('id_logout')
         logout_button.click()
-        self.assertEqual(self.browser.current_url,self.BASE_URL+'/')
+        self.assertEqual(self.browser.current_url,self.BASE_URL+'/login/')
 
 class JoeAndJaneNewImage(LiveServerTestCase):
 
@@ -205,7 +215,7 @@ class JoeAndJaneNewImage(LiveServerTestCase):
         try:
             self.browser.find_element_by_link_text("Joe's First Photo Upload")
             img = self.browser.find_element_by_tag_name('img')
-            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+            self.assertIn('uploaded_files/image',img.get_attribute('src'))
 
         except:
             self.fail('Jane could not see image uploaded by Joe')
@@ -287,7 +297,7 @@ class JoeAndUserApprovals(LiveServerTestCase):
         try:
             self.browser.find_element_by_link_text("Adam's First Photo Upload")
             img = self.browser.find_element_by_tag_name('img')
-            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+            self.assertIn('uploaded_files/image',img.get_attribute('src'))
 
         except:
             self.fail('Joe could not see image uploaded by Adam')
@@ -308,7 +318,7 @@ class JoeAndUserApprovals(LiveServerTestCase):
         try:
             self.browser.find_element_by_link_text("Adam's First Photo Upload")
             img = self.browser.find_element_by_tag_name('img')
-            self.assertIn('/media/uploaded_files/image',img.get_attribute('src'))
+            self.assertIn('uploaded_files/image',img.get_attribute('src'))
 
         except:
             self.fail('Joe could not see the approved image')

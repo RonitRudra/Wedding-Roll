@@ -77,19 +77,28 @@ class Manage(ListView):
     template_name = 'rolls/manage.html'
     model = Uploads
 
+    def get(self, request, *args, **kwargs):
+        if request.user.is_owner:
+            return super().get(request, *args, **kwargs)
+        else:
+            return redirect('rolls:home')
+
     def get_queryset(self):
         return Uploads.objects.filter(is_approved=False).order_by('-date_posted')
 
     def post(self,request, *args, **kwargs):
-        for key,val in request.POST.items():
-            if key == 'csrfmiddlewaretoken':
-                pass
-            else:
-                obj = Uploads.objects.get(id=val)
-                print(obj)
-                obj.is_approved = True
-                obj.save()
-        return redirect('rolls:home')
+        if request.user.is_owner:
+            for key,val in request.POST.items():
+                if key == 'csrfmiddlewaretoken':
+                    pass
+                else:
+                    obj = Uploads.objects.get(id=val)
+                    print(obj)
+                    obj.is_approved = True
+                    obj.save()
+            return redirect('rolls:home')
+        else:
+            return redirect('home:home')
 
 @require_POST
 def like(request):
