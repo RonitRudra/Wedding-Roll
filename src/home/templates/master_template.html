@@ -10,7 +10,8 @@
     <body class="body">
         {% load static %}
 
-        <div  class="container-fluid">
+        <div class="container-fluid">
+            {% block nav %}
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -24,7 +25,7 @@
                             <a class="nav-link" href="{% url 'rolls:upload' %}">Upload <span class="sr-only">(current)</span></a>
                             {% endif %}
                         </li>
-                      
+
                     </ul>
                     <ul class="form-inline my-2 my-lg-0">
                         {% if user.is_authenticated %}
@@ -33,65 +34,32 @@
                     </ul>
                 </div>
             </nav>
-     
-            <!--<nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'home:home' %}">J&J Wedding Album</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse justify-content-between" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                {% if user.is_authenticated %}
-                <a class="nav-item nav-link active" href="{% url 'rolls:upload' %}">Upload <span class="sr-only">(current)</span></a>
-                <ul class="navbar-nav mr-aut">
-                    <li class="nav-item">
-                        <a class="nav-item nav-link active" href="{% url 'home:logout' %}">Logout <span class="sr-only">(current)</span></a>
-                    </li>
-                </ul>
+            {% endblock %}
 
-                {% endif %}
-            </div>
-        </div>
-    </nav>-->
-            <!--<a class="navbar-brand" href="{% url 'home:home' %}">J&J Wedding Album</a>
-    {% if user.is_authenticated %}
-    <div class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-item nav-link active" href="{% url 'rolls:upload' %}">Upload</></a>
-            </li>
-        </ul>
-    </div>
-    {% endif %}
-    {%if user.is_authenticated %}
-    <ul class="nav navbar-nav navbar-right">
-        <li><a id="id_logout" href="{% url 'home:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-    </ul>
-    {% else %}
-    <ul class="nav navbar-nav navbar-right">
-        <li><a href="{% url 'home:signup' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-    </ul>
-    {% endif %}-->
 
             {% block message%}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
-                            <ul class="messages">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                                {{ message }}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                <ul class="messages">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{ message }}
+                </ul>
+            </div>
+            {% endfor %}
+            {% endif %}
             {% endblock %}
 
             <div align="center">
                 {% block content %}
                 {% endblock %}
             </div>
+            <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             {% block scripts %}
             {% endblock %}
