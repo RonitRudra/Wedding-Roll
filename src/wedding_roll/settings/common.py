@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wedding_roll.middleware.Middleware_LoginRequired',
 ]
 
 ROOT_URLCONF = 'wedding_roll.urls'
@@ -129,3 +130,12 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+LOGIN_URL = '/login/'
+
+LOGIN_EXEMPT_URLS = (
+    r'^/$',
+    r'^login/$',
+    r'^signup/$',
+    r'^logout/$',
+    )
